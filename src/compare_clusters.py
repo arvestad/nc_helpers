@@ -27,10 +27,10 @@ def load_json(handle) -> dict | None:
     try:
         jsondata = json.load(handle)
         if not jsondata:        # In case empty file
-            sys.exit(f'No data in {handle.name}', file=sys.stderr)
+            exit(f'No data in {handle.name}', file=sys.stderr)
         return jsondata
     except:
-        sys.exit(f'Could not load JSON data from {handle.name}')
+        exit(f'Could not load JSON data from {handle.name}')
 
 
 def strip_species_prefix(seq_id: str) -> str:
@@ -95,7 +95,7 @@ def compare_clusterings(inv1: dict, inv2: dict) -> None:
         print(f"  Note: {len(only_in_2)} sequences only in file 2 (excluded)", file=sys.stderr)
 
     if not common:
-        sys.exit("Error: No sequences in common between the two files.", file=sys.stderr)
+        exit(f"Error: No sequences in common between the two files.")
     else:
         print(f"  Sequences in common: {len(common)}", file=sys.stderr)
 
