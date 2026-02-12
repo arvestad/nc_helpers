@@ -1,6 +1,5 @@
 import argparse
 import json
-from pathlib import Path
 from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score
 import sys
 
@@ -23,15 +22,15 @@ def argparser():
     return ap
 
 
-def load_json(path: Path) -> dict | None:
+def load_json(handle) -> dict | None:
     """Load and return a JSON file, or None on failure."""
     try:
-        jsondata = json.load(path)
+        jsondata = json.load(handle)
         if not jsondata:        # In case empty file
-            sys.exit(f'No data in {path}', file=sys.stderr)
+            sys.exit(f'No data in {handle.name}', file=sys.stderr)
         return jsondata
     except:
-        sys.exit(f'Could not load JSON data from {path}')
+        sys.exit(f'Could not load JSON data from {handle.name}')
 
 
 def strip_species_prefix(seq_id: str) -> str:
