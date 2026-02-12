@@ -28,10 +28,10 @@ def load_json(path: Path) -> dict | None:
     try:
         jsondata = json.load(path)
         if not jsondata:        # In case empty file
-            sys.exit(f'No data in f{path}', file=sys.stderr)
+            sys.exit(f'No data in {path}', file=sys.stderr)
         return jsondata
     except:
-        sys.exit(f'Could not load JSON data from f{args.jsonfile1}')
+        sys.exit(f'Could not load JSON data from {path}')
 
 
 def strip_species_prefix(seq_id: str) -> str:
