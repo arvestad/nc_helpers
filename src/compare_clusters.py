@@ -125,12 +125,21 @@ def output_broken_clusters(labels1, labels2):
     header_label = 'Cluster' 
     label_width = max(len(header_label), max(map(len, true_labels)))
 
-    print(f'{header_label:{label_width}}  Entropy  Only "broken" clusters reported')
+    print(f'{header_label:{label_width}}  Entropy  Purity  Gini  Only "broken" clusters reported')
     for idx, label in enumerate(true_labels):
         row = M.getrow(idx).toarray().ravel()
         h = entropy(row)
         if h > 0:
-            print(f'{label:{label_width}}  {h:.4}')
+            purity = row.max() / row.sum()
+            gini = gini_helper(row)
+            print(f'{label:{label_width}}  {h:.4}  {purity:.4}  {gini:.4}')
+
+
+def gini_helper(row):
+    rowsum = row.sum()
+    pvec = row / rowsum
+    return 1.0 - np.sum(pvec * pvec)
+        
 
 
 def main():
