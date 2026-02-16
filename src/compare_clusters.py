@@ -112,8 +112,8 @@ def compare_clusterings(inv1: dict, inv2: dict, compare_clusters) -> None:
     ars = adjusted_rand_score(labels1, labels2)
     nmi = normalized_mutual_info_score(labels1, labels2)
 
-    print(f"\nAdjusted Rand Score   : {ars:.4f}")
-    print(f"Normalized Mutual Info: {nmi:.4f}")
+    print(f"\nAdjusted Rand Score   : {ars:7.4f}")
+    print(f"Normalized Mutual Info: {nmi:7.4f}")
 
     if compare_clusters:
         output_broken_clusters(labels1, labels2)
@@ -125,14 +125,14 @@ def output_broken_clusters(labels1, labels2):
     header_label = 'Cluster' 
     label_width = max(len(header_label), max(map(len, true_labels)))
 
-    print(f'{header_label:{label_width}}  Entropy  Purity  Gini  Only "broken" clusters reported')
+    print(f'{header_label:{label_width}}   Entropy  Purity    Gini  Only "broken" clusters reported')
     for idx, label in enumerate(true_labels):
         row = M.getrow(idx).toarray().ravel()
         h = entropy(row)
         if h > 0:
             purity = row.max() / row.sum()
             gini = gini_helper(row)
-            print(f'{label:{label_width}}  {h:.4}  {purity:.4}  {gini:.4}')
+            print(f'{label:{label_width}}  {h:7.4}  {purity:7.4} {gini:7.4}')
 
 
 def gini_helper(row):
