@@ -22,8 +22,8 @@ def argparser():
                     help='Path to JSON file containing clusters.')
     ap.add_argument('jsonfile2', type=argparse.FileType('r'),
                     help='Another path to a JSON file containing clusters.')
-    ap.add_argument('-c', '--contingencymatrix', type=str,
-                    help='Give a filename for storing a contingency matrix, analyzing the differences between the input clusters, treating jsonfile1 as the true clustering.') 
+    ap.add_argument('-c', action='store_true',
+                    help='Compute a contingency matrix and analyze the differences between the input clusters, treating jsonfile1 as the true clustering.') 
     return ap
 
 
@@ -84,7 +84,7 @@ def invert_clusters(data: dict) -> dict[str, str]:
 
 
 
-def compare_clusterings(inv1: dict, inv2: dict, contingency_matrix_filename: str) -> None:
+def compare_clusterings(inv1: dict, inv2: dict, compare_clusters) -> None:
     """
     Compare two sequence->cluster mappings and print ARS and NMI scores.
     Only sequences present in both files are compared.
@@ -115,23 +115,22 @@ def compare_clusterings(inv1: dict, inv2: dict, contingency_matrix_filename: str
     print(f"\nAdjusted Rand Score   : {ars:.4f}")
     print(f"Normalized Mutual Info: {nmi:.4f}")
 
-    if contingency_matrix_filename:
-        output_broken_clusters(labels1, labels2, contingency_matrix_filename)
+    if compare_clusters:
+        output_broken_clusters(labels1, labels2)
 
 
-def output_broken_clusters(labels1, labels2, filename):
+def output_broken_clusters(labels1, labels2):
     M = contingency_matrix(labels1, labels2, sparse=True)
     true_labels = np.sort(np.unique(labels1)) # Gather the labels in the order that sklearn enumerates them
     header_label = 'Cluster' 
     label_width = max(len(header_label), max(map(len, true_labels)))
 
-    with open(filename, 'w') as out:
-        print(f'{header_label:{label_width}}  Entropy  Only "broken" clusters reported', file=out)
-        for idx, label in enumerate(true_labels):
-            row = M.getrow(idx).toarray().ravel()
-            h = entropy(row)
-            if h > 0:
-                print(f'{label:{label_width}}  {h:.4}', file=out)
+    print(f'{header_label:{label_width}}  Entropy  Only "broken" clusters reported')
+    for idx, label in enumerate(true_labels):
+        row = M.getrow(idx).toarray().ravel()
+        h = entropy(row)
+        if h > 0:
+            print(f'{label:{label_width}}  {h:.4}')
 
 
 def main():
@@ -150,7 +149,7 @@ def main():
     print(f"  {len(inv2)} sequences found", file=sys.stderr)
 
     print("\nComparing clusterings...", file=sys.stderr)
-    compare_clusterings(inv1, inv2, args.contingencymatrix)
+    compare_clusterings(inv1, inv2, args.c)
 
 
 if __name__ == "__main__":
