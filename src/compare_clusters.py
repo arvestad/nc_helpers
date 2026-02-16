@@ -102,7 +102,7 @@ def compare_clusterings(inv1: dict, inv2: dict, compare_clusters) -> None:
     if not common:
         exit(f"Error: No sequences in common between the two files.")
     else:
-        print(f"  Sequences in common: {len(common)}", file=sys.stderr)
+        print(f"  Sequences in common: {len(common)}")
 
     # Build parallel label lists sorted for reproducibility
     sorted_seqs = sorted(common)
