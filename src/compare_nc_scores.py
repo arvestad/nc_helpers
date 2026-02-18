@@ -25,13 +25,13 @@ def read_nc_scores(scorefile):
             raise ValueError(f'Expected three columns, but got "{line}".')
         left, right, val = cols
         if left < right:
-            scores[left, right] = val
+            scores[left, right] = float(val)
         elif right < left:
-            scores[right, left] = val
+            scores[right, left] = float(val)
     return scores
 
 
-def plot_scores(nc1, nc2, outfile):
+def plot_scores(nc1, nc2):
     s1 = set(nc1.keys())
     s2 = set(nc2.keys())
     
@@ -41,11 +41,19 @@ def plot_scores(nc1, nc2, outfile):
 
     x = list()
     y = list()
-    for a, b in joint:
-        x.append(a)
-        y.append(b)
-    seaborn.jointplot(x=x, y=y, kind='scatter', alpha=0.3)
-    plt.savefig(outfile)
+    for pair in joint:
+        x.append(nc1[pair])
+        y.append(nc2[pair])
+
+    for pair in unique_s1:
+        x.append(nc1[pair])
+        y.append(0.0)
+
+    for pair in unique_s2:
+        x.append(0.0)
+        y.append(nc2[pair])
+
+    return sns.jointplot(x=x, y=y, kind='scatter', alpha=0.3, color='blue')
 
 
 def main():
@@ -54,7 +62,11 @@ def main():
 
     nc1 = read_nc_scores(args.nc1)
     nc2 = read_nc_scores(args.nc2)
-    plot_scores(nc1, nc2, args.outfile)
+
+    fig = plot_scores(nc1, nc2)
+    fig.ax_joint.set_xlabel(args.nc1)
+    fig.ax_joint.set_ylabel(args.nc2)
+    plt.savefig(args.outfile)
     
     
     
