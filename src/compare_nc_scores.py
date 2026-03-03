@@ -8,10 +8,12 @@ def argparser():
     '''
     ap = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,
                                  description='Compare NC scores computed in different ways.')
+    ap.add_argument('-x', type=str, help='Label for x axis, if filename is not sufficient')
+    ap.add_argument('-y', type=str, help='Label for y axis, if filename is not sufficient')
     ap.add_argument('nc1', type=argparse.FileType('r'),
-                    help='Path to JSON file containing clusters.')
+                    help='Path to JSON file containing NC scores for x coordinates.')
     ap.add_argument('nc2', type=argparse.FileType('r'),
-                    help='Another path to a JSON file containing clusters.')
+                    help='Another path to a JSON file containing NC scores for y coordinates.')
     ap.add_argument('outfile', type=str,
                     help='Where to put the output PDF')
     return ap
@@ -64,8 +66,14 @@ def main():
     nc2 = read_nc_scores(args.nc2)
 
     fig = plot_scores(nc1, nc2)
-    fig.ax_joint.set_xlabel(args.nc1.name)
-    fig.ax_joint.set_ylabel(args.nc2.name)
+    if args.x:
+        fig.ax_joint.set_xlabel(args.x)
+    else:
+        fig.ax_joint.set_xlabel(args.nc1.name)
+    if args.y:
+        fig.ax_joint.set_ylabel(args.y)
+    else:
+        fig.ax_joint.set_ylabel(args.nc2.name)
     plt.savefig(args.outfile)
     
     
