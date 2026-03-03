@@ -53,7 +53,7 @@ def plot_scores(nc1, nc2):
         x.append(0.0)
         y.append(nc2[pair])
 
-    return sns.jointplot(x=x, y=y, kind='scatter', alpha=0.3, color='blue')
+    return sns.jointplot(x=x, y=y, kind='scatter', alpha=0.3, marker='.', color='blue')
 
 
 def main():
@@ -64,8 +64,8 @@ def main():
     nc2 = read_nc_scores(args.nc2)
 
     fig = plot_scores(nc1, nc2)
-    fig.ax_joint.set_xlabel(args.nc1)
-    fig.ax_joint.set_ylabel(args.nc2)
+    fig.ax_joint.set_xlabel(args.nc1.name)
+    fig.ax_joint.set_ylabel(args.nc2.name)
     plt.savefig(args.outfile)
     
     
